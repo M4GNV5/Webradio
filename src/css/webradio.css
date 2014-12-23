@@ -1,0 +1,16 @@
+.icon-bar-bottom { position: absolute; bottom: 0px; }
+.hidden { display: none; }
+
+#content { background: #979797; height: 100%; }
+
+.play-wrapper { max-width: 90%; }
+.play-content { margin: 0 auto; max-width: 400px; max-height: 500px; }
+.play-content img { border-radius: 50px; }
+@media all and (max-width: 40px)
+{
+	.play-buttons { font-size: 15vw; }
+}
+@media all and (min-width: 400px)
+{
+	.play-buttons { font-size: 66px; }
+}
