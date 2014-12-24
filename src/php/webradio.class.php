@@ -42,11 +42,22 @@
 			$matches = array();
 			foreach($stationData as $key => $value)
 			{
-				if(!is_string($value))
-					continue;
-				if(strpos($value, $filter) !== false)
+				$match = false;
+				foreach($value as $key2 => $value2)
+				{
+					if(!is_string($value2))
+						continue;
+
+					if(strpos($value2, $filter) !== false)
+					{
+						$match = true;
+						break;
+					}
+				}
+				if($match)
+				{
 					$matches[$key] = $value;
-					
+				}
 			}
 			return $matches;
 		}
@@ -56,6 +67,21 @@
 			global $stationData;
 			
 			return $stationData[$name];
+		}
+
+		public static function setStationData($name, $url, $img)
+		{
+			global $stationData;
+
+			$data = array(
+				"name" => $name,
+				"url" => $url,
+				"img" => $img
+			);
+
+			$stationData[$name] = $data;
+
+			file_put_contents(PHP_PATH."data.json", json_encode($stationData));
 		}
 		
 		

@@ -1,15 +1,14 @@
-var currentPage = "play";
-
-function loadPage(name)
+var currentPage;
+function loadPage(name, obj)
 {
-	console.log("Loading page "+name);
-	
-	$("#n"+currentPage).removeClass("active");
-	$("#n"+name).addClass("active");
+	if(currentPage)
+		currentPage.removeClass("active");
+	obj.addClass("active");
 	
 	$("#content").html($("#"+name).html());
-	currentPage = name;
+	currentPage = obj;
 }
+loadPage("play", $('#play-icon'));
 
 function playRandomStation()
 {
@@ -22,10 +21,12 @@ function playRandomStation()
 }
 
 var emptyImage = "http://upload.wikimedia.org/wikipedia/commons/6/68/Solid_black.png";
-
 var Player = new function()
 {
 	this.stations = [];
+
+	$.get("src/php/ajax.php?do=getStations", function(data) { Player.stations = JSON.parse(data); intializeList(); });
+
 	//this.current;
 	
 	this.stop = function()
@@ -43,7 +44,9 @@ var Player = new function()
 		var newImg = (typeof this.stations[name] == 'undefined') ? emptyImage : this.stations[name].img;
 		$('.play-img').attr("src", newImg);
 		
-		$.get("/src/php/ajax.php?do=playByName&name="+name, function(data) { alert(data); });
+		$.ajax("/src/php/ajax.php?do=playByName&name="+name);
+
+		loadPage("play", $('#play-icon'));
 	}
 	this.volumeUp = function()
 	{
@@ -53,4 +56,44 @@ var Player = new function()
 	{
 		$.ajax("/src/php/ajax.php?do=volume&change=-1");
 	}
+
+	this.findStations = function(keyword, callback)
+	{
+		$.get("src/php/ajax.php?do=findStation&filter="+keyword, callback);
+	}
+
+	this.setStationData = function(name, url, img)
+	{
+		//TODO escape url (especially &)
+
+		$.ajax("src/php/ajax.php?do=setStationData&name="+name+"&url="+url+"&img="+img);
+	}
+}
+
+function intializeList()
+{
+	var listItem = $("#list-grid");
+	for(var name in Player.stations)
+	{
+		if(Player.stations.hasOwnProperty(name) && Player.stations[name].img)
+		{
+			listItem.html('<li><a onclick="Player.play(\''+name+'\')"><img src="'+Player.stations[name].img+'" alt="'+name+'" /></a></li>');
+		}
+	}
+}
+
+function searchFor(keyword)
+{
+	Player.findStations(keyword, function(data)
+	{
+		var listItem = $("#search-grid");
+		var items = JSON.parse(data);
+		for(var name in items)
+		{
+			if(items.hasOwnProperty(name) && items[name].img)
+			{
+				listItem.html('<li><img src="'+items[name].img+'" alt="'+name+'" /></li>');
+			}
+		}
+	});
 }

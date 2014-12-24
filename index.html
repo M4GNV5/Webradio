@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webradio</title>
+    <link rel="stylesheet" href="src/css/foundation.min.css" />
+    <link rel="stylesheet" href="src/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="src/css/webradio.css" />
+  </head>
+  <body>
+    <div class="icon-bar icon-bar-bottom four-up">
+      <a id="play-icon" class="item" onclick="loadPage('play', $(this));">
+        <i class="fa fa-play"></i>
+      </a>
+      <a class="item" onclick="loadPage('list', $(this));">
+        <i class="fa fa-list"></i>
+      </a>
+      <a class="item" onclick="loadPage('search', $(this));">
+        <i class="fa fa-search"></i>
+      </a>
+      <a class="item" onclick="loadPage('cog', $(this));">
+        <i class="fa fa-cog"></i>
+      </a>
+    </div>
+
+    <div id="content">
+
+    </div>
+
+    <div id="play" class="hidden">
+    </div>
+
+    <div id="list" class="hidden">
+      <ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+    </div>
+
+    <div id="search" class="hidden">
+      <div class="search-bar responsive">
+        <input class="search-textbox" type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
+      </div>
+      <br /><br /><br />
+      <ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+    </div>
+
+    <div id="cog" class="hidden">
+    </div>
+
+    <script src="src/js/jquery.js"></script>
+    <script src="src/js/webradio.js"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 <?php
 
-	define("PHP_PATH", "/home/codio/workspace/src/php/");
+	define("PHP_PATH", "./");
 
 	require_once(PHP_PATH."webradio.class.php");
 
