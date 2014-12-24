@@ -12,7 +12,7 @@
       <a id="play-icon" class="item" onclick="loadPage('play', $(this));">
         <i class="fa fa-play"></i>
       </a>
-      <a class="item" onclick="loadPage('list', $(this));">
+      <a class="item" onclick="loadPage('list', $(this)); setTimeout('setBlockGridItemSize(\'list-img\')', 1000);">
         <i class="fa fa-list"></i>
       </a>
       <a class="item" onclick="loadPage('search', $(this));">
@@ -28,21 +28,38 @@
     </div>
 
     <div id="play" class="hidden">
+		<div class="play-wrapper">
+			<div class="play-content">
+				<img class="play-img" width="100%" src="http://upload.wikimedia.org/wikipedia/commons/6/68/Solid_black.png" />
+				<br />
+				<div class="play-buttons">
+					<a onclick="Player.stop();"><i class="fa fa-stop fa-fw"></i></a>
+					<a onclick="Player.volumeDown();"><i class="fa fa-minus fa-fw"></i></a>
+					<a onclick="Player.volumeUp();"><i class="fa fa-plus fa-fw"></i></a>
+					<a onclick="playRandomStation();"><i class="fa fa-random fa-fw"></i></a>
+				</div>
+			</div>
+		</div>
     </div>
 
     <div id="list" class="hidden">
-      <ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+    	<ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
     </div>
 
     <div id="search" class="hidden">
-      <div class="search-bar responsive">
-        <input class="search-textbox" type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
-      </div>
-      <br /><br /><br />
-      <ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
-    </div>
+    	<div class="input responsive">
+    		<input type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
+    	</div>
+    	<ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+	</div>
 
     <div id="cog" class="hidden">
+		<div class="input responsive">
+    		<input id="cogName" type="text" width="100%" placeholder="Sendernamen hier eingeben" onchange="addStation['name'] = this.value; intializeCog();" />
+			<input id="cogUrl" type="text" placeholder="Stream-Url hier eingeben" onchange="addStation['url'] = this.value;" />
+			<input id="cogImg" type="text" placeholder="Bild-Url hier eingeben" onchange="addStation['img'] = this.value;" />
+			<button class="input-button" onclick="Player.setStationData(addStation['name'], addStation['url'], addStation['img']);">Abschicken</button>
+    	</div>
     </div>
 
     <script src="src/js/jquery.js"></script>

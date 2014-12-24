@@ -61,6 +61,18 @@
 			}
 			return $matches;
 		}
+		public static function getCurrentStation()
+		{
+			global $stationData;
+			
+			$url = self::mpcCommand("playlist");
+			foreach($stationData as $key => $value)
+			{
+				if(isset($value) && $value["url"] == $url)
+					return $key;
+			}
+			return false;
+		}
 		
 		public static function getStationData($name)
 		{
@@ -73,6 +85,8 @@
 		{
 			global $stationData;
 
+			$url = str_replace("%and%", "&", $url);
+				
 			$data = array(
 				"name" => $name,
 				"url" => $url,
