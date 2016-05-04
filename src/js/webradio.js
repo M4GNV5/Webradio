@@ -13,7 +13,7 @@ function loadPage(name, obj)
 	if(currentPage)
 		currentPage.removeClass("active");
 	obj.addClass("active");
-	
+
 	$("#content").html($("#"+name).html());
 	currentPage = obj;
 }
@@ -25,7 +25,7 @@ function playRandomStation()
 	var min = 0;
 	var max = keys.length-1;
 	var index = Math.floor(Math.random() * (max - min)) + min;
-	
+
 	Player.play(keys[index]);
 }
 
@@ -34,28 +34,28 @@ var Player = new function()
 {
 	this.stations = {};
 	//this.current;
-	
+
 	this.refreshStations = function()
 	{
 		$.get("src/php/ajax.php?do=getStations", function(data) { Player.stations = JSON.parse(data); intializeList(); intializePlay(); });
 	}
 	this.refreshStations();
-	
+
 	this.stop = function()
 	{
 		$('.play-img').attr("src", emptyImage);
-		
+
 		$.ajax("/src/php/ajax.php?do=stop");
 	}
 	this.play = function(name)
 	{
 		if(typeof name == 'undefined')
 			throw "Cannot start stream without name!";
-		
+
 		this.current = name;
 		var newImg = (typeof this.stations[name] == 'undefined') ? emptyImage : this.stations[name].img;
 		$('.play-img').attr("src", newImg);
-		
+
 		$.ajax("/src/php/ajax.php?do=playByName&name="+name);
 
 		loadPage("play", $('#play-icon'));
@@ -123,16 +123,16 @@ function setBlockGridItemSize(img)
 		var img = $(imgs[i]);
 		if(maxSize < img.width())
 			maxSize = img.width();
-		
+
 		img.css("top", "50%");
 		var margin = Math.floor(img.height()/2);
 		img.css("margin-top", "-"+margin);
-		
+
 		img.css("left", "50%");
 		margin = Math.floor(img.width()/2);
 		img.css("margin-left", "-"+margin);
 	}
-	
+
 	$(".img-container").css("width", maxSize);
 	$(".img-container").css("height", maxSize);
 }
@@ -142,7 +142,7 @@ function intializeInput()
 {
 	var docWidth = $(document).width();
 	$(".input").css("width", (docWidth-20)+"px");
-	
+
 	$(".input-button").css("width", (docWidth-20)+"px");
 }
 $(window).resize(intializeInput);
@@ -155,7 +155,7 @@ function intializeCog()
 	{
 		$("#cogUrl").val(Player.stations[name].url);
 		$("#cogImg").val(Player.stations[name].img);
-		
+
 		addStation["url"] = Player.stations[name].url;
 		addStation["img"] = Player.stations[name].img;
 	}
@@ -169,26 +169,7 @@ function intializePlay()
 	{
 		var newImg = (typeof Player.stations[Player.current] == 'undefined') ? emptyImage : Player.stations[name].img;
 		$('.play-img').attr("src", newImg);
-		
+
 	});
 	resizePlay();
 }
-function resizePlay()
-{
-	var playObject = $('.play-content');
-	var width = playObject.width();
-	var height = playObject.height();
-	var iconbarHeight = $('.icon-bar-bottom').height();
-	
-	var margin;
-	
-	playObject.css("position", "absolute");
-	playObject.css("top", "50%");
-	margin = Math.floor(height/2) + iconbarHeight;
-	playObject.css("margin-top", "-"+margin);
-	
-	playObject.css("left", "50%");
-	margin = Math.floor(width/2);
-	playObject.css("margin-left", "-"+margin);
-}
-$(window).resize(resizePlay);
