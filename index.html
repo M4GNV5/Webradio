@@ -1,33 +1,33 @@
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Webradio</title>
-    <link rel="stylesheet" href="src/css/foundation.min.css" />
-    <link rel="stylesheet" href="src/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="src/css/webradio.css" />
-  </head>
-  <body>
-    <div class="icon-bar icon-bar-bottom four-up">
-      <a id="play-icon" class="item" onclick="loadPage('play', $(this));">
-        <i class="fa fa-play"></i>
-      </a>
-      <a class="item" onclick="loadPage('list', $(this)); setTimeout('setBlockGridItemSize(\'list-img\')', 1000);">
-        <i class="fa fa-list"></i>
-      </a>
-      <a class="item" onclick="loadPage('search', $(this));">
-        <i class="fa fa-search"></i>
-      </a>
-      <a class="item" onclick="loadPage('cog', $(this));">
-        <i class="fa fa-cog"></i>
-      </a>
-    </div>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Webradio</title>
+		<link rel="stylesheet" href="src/css/foundation.min.css" />
+		<link rel="stylesheet" href="src/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="src/css/webradio.css" />
+	</head>
+	<body>
+	<div class="icon-bar icon-bar-bottom four-up">
+		<a id="play-icon" class="item" onclick="loadPage('play', $(this));">
+			<i class="fa fa-play"></i>
+		</a>
+		<a class="item" onclick="loadPage('list', $(this)); setTimeout('setBlockGridItemSize(\'list-img\')', 1000);">
+			<i class="fa fa-heart"></i>
+		</a>
+		<a class="item" onclick="loadPage('search', $(this));">
+			<i class="fa fa-search"></i>
+		</a>
+		<a class="item" onclick="loadPage('tv', $(this));">
+			<i class="fa fa-television"></i>
+		</a>
+	</div>
 
-    <div id="content">
+	<div id="content">
 
-    </div>
+	</div>
 
-    <div id="play" class="hidden">
+	<div id="play" class="hidden">
 		<div class="play-wrapper">
 			<div class="play-content">
 				<img class="play-img" width="100%" src="http://upload.wikimedia.org/wikipedia/commons/6/68/Solid_black.png" />
@@ -40,29 +40,26 @@
 				</div>
 			</div>
 		</div>
-    </div>
-
-    <div id="list" class="hidden">
-    	<ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
-    </div>
-
-    <div id="search" class="hidden">
-    	<div class="input responsive">
-    		<input type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
-    	</div>
-    	<ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
 	</div>
 
-    <div id="cog" class="hidden">
-		<div class="input responsive">
-    		<input id="cogName" type="text" width="100%" placeholder="Sendernamen hier eingeben" onchange="addStation['name'] = this.value; intializeCog();" />
-			<input id="cogUrl" type="text" placeholder="Stream-Url hier eingeben" onchange="addStation['url'] = this.value;" />
-			<input id="cogImg" type="text" placeholder="Bild-Url hier eingeben" onchange="addStation['img'] = this.value;" />
-			<button class="input-button" onclick="Player.setStationData(addStation['name'], addStation['url'], addStation['img']);">Abschicken</button>
-    	</div>
-    </div>
+	<div id="list" class="hidden">
+		<ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+	</div>
 
-    <script src="src/js/jquery.js"></script>
-    <script src="src/js/webradio.js"></script>
+	<div id="search" class="hidden">
+		<div class="input responsive">
+			<input type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
+		</div>
+		<ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
+	</div>
+
+	<div id="tv" class="hidden">
+		<div class="input responsive">
+			soon...
+		</div>
+	</div>
+
+	<script src="src/js/jquery.js"></script>
+	<script src="src/js/webradio.js"></script>
   </body>
 </html>
