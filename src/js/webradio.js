@@ -8,28 +8,21 @@ $( document ).ajaxSuccess(function( event, xhr, settings )
 });
 
 var currentPage;
+var currentContent;
 function loadPage(name, obj)
 {
 	if(currentPage)
 		currentPage.removeClass("active");
 	obj.addClass("active");
-
-	$("#content").html($("#"+name).html());
 	currentPage = obj;
+
+	if(currentContent)
+		currentContent.addClass("hidden")
+	currentContent = $("#"+name);
+	currentContent.removeClass("hidden");
 }
 loadPage("play", $('#play-icon'));
 
-function playRandomStation()
-{
-	var keys = Object.keys(Player.stations);
-	var min = 0;
-	var max = keys.length-1;
-	var index = Math.floor(Math.random() * (max - min)) + min;
-
-	Player.play(keys[index]);
-}
-
-var emptyImage = "http://upload.wikimedia.org/wikipedia/commons/6/68/Solid_black.png";
 var Player = new function()
 {
 	this.stations = {};
@@ -90,7 +83,13 @@ function intializeList()
 	{
 		if(Player.stations.hasOwnProperty(name) && Player.stations[name].img)
 		{
-			listItem.append('<li><div class="img-container"><a onclick="Player.play(\''+name+'\')"><img class="list-img" src="'+Player.stations[name].img+'" alt="'+name+'" /></a></div></li>');
+			listItem.append('<li>' +
+				'<div class="img-container">' +
+					'<a onclick="Player.play(\''+name+'\')">' +
+						'<img class="list-img" src="'+Player.stations[name].img+'" alt="'+name+'" />' +
+					'</a>' +
+				'</div>' +
+			'</li>');
 		}
 	}
 }
@@ -105,63 +104,18 @@ function searchFor(keyword)
 		{
 			if(items.hasOwnProperty(name) && items[name].img)
 			{
-				var item = $('<li><div class="img-container"><a onclick="Player.play(\''+name+'\')"><img class="search-img" src="'+items[name].img+'" alt="'+name+'" /></div></a></li>');
-				listItem.append(item);
+				listItem.append('<li>' +
+					'<div class="img-container">' +
+						'<a onclick="Player.play(\''+name+'\')">' +
+							'<img class="search-img" src="'+Player.stations[name].img+'" alt="'+name+'" />' +
+						'</a>' +
+					'</div>' +
+				'</li>');
 			}
 		}
 		setTimeout("setBlockGridItemSize('search-img')", 1);
 	});
 }
-var addStation = {};
-
-function setBlockGridItemSize(img)
-{
-	var maxSize = 0;
-	var imgs = $(img);
-	for(var i = 0; i < imgs.length; i++)
-	{
-		var img = $(imgs[i]);
-		if(maxSize < img.width())
-			maxSize = img.width();
-
-		img.css("top", "50%");
-		var margin = Math.floor(img.height()/2);
-		img.css("margin-top", "-"+margin);
-
-		img.css("left", "50%");
-		margin = Math.floor(img.width()/2);
-		img.css("margin-left", "-"+margin);
-	}
-
-	$(".img-container").css("width", maxSize);
-	$(".img-container").css("height", maxSize);
-}
-$(window).resize(setBlockGridItemSize);
-
-function intializeInput()
-{
-	var docWidth = $(document).width();
-	$(".input").css("width", (docWidth-20)+"px");
-
-	$(".input-button").css("width", (docWidth-20)+"px");
-}
-$(window).resize(intializeInput);
-intializeInput();
-
-function intializeCog()
-{
-	var name = $("#cogName").val();
-	if(Player.stations[name])
-	{
-		$("#cogUrl").val(Player.stations[name].url);
-		$("#cogImg").val(Player.stations[name].img);
-
-		addStation["url"] = Player.stations[name].url;
-		addStation["img"] = Player.stations[name].img;
-	}
-}
-
-
 
 function intializePlay()
 {

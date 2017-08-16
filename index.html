@@ -25,38 +25,36 @@
 
 	<div id="content">
 
-	</div>
-
-	<div id="play" class="hidden">
-		<div class="play-wrapper">
+		<div id="play" class="hidden">
 			<div class="play-content">
-				<img class="play-img" width="100%" src="http://upload.wikimedia.org/wikipedia/commons/6/68/Solid_black.png" />
+				<img class="play-img" />
 				<br />
 				<div class="play-buttons">
 					<a onclick="Player.stop();"><i class="fa fa-stop fa-fw"></i></a>
 					<a onclick="Player.volumeDown();"><i class="fa fa-minus fa-fw"></i></a>
 					<a onclick="Player.volumeUp();"><i class="fa fa-plus fa-fw"></i></a>
-					<a onclick="playRandomStation();"><i class="fa fa-random fa-fw"></i></a>
+					<a onclick="Player.toggleFavour();"><i class="fa fa-heart-o fa-fw"></i></a>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div id="list" class="hidden">
-		<ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
-	</div>
-
-	<div id="search" class="hidden">
-		<div class="input responsive">
-			<input type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
+		<div id="list" class="hidden">
+			<ul id="list-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
 		</div>
-		<ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
-	</div>
 
-	<div id="tv" class="hidden">
-		<div class="input responsive">
-			soon...
+		<div id="search" class="hidden">
+			<div class="input responsive">
+				<input type="text" placeholder="Suchwort hier eingeben" onchange="searchFor(this.value);" />
+			</div>
+			<ul id="search-grid" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 responsive"></ul>
 		</div>
+
+		<div id="tv" class="hidden">
+			<div class="input responsive">
+				soon...
+			</div>
+		</div>
+
 	</div>
 
 	<script src="src/js/jquery.js"></script>
