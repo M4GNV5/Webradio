@@ -27,13 +27,13 @@
 
 			<div id="play" class="hidden">
 				<div class="play-content">
-					<img class="play-img" />
+					<img id="play-img" class="play-img" />
 					<br />
 					<div class="play-buttons">
-						<a onclick="Player.stop();"><i class="fa fa-stop fa-fw"></i></a>
-						<a onclick="Player.volumeDown();"><i class="fa fa-minus fa-fw"></i></a>
-						<a onclick="Player.volumeUp();"><i class="fa fa-plus fa-fw"></i></a>
-						<a onclick="Player.toggleFavour();"><i class="fa fa-heart-o fa-fw"></i></a>
+						<a onclick="player.stop();"><i class="fa fa-stop fa-fw"></i></a>
+						<a onclick="player.changeVolume(+5);"><i class="fa fa-minus fa-fw"></i></a>
+						<a onclick="player.changeVolume(-5);"><i class="fa fa-plus fa-fw"></i></a>
+						<a onclick="toggleFavourite();"><i id="favourite-indicator" class="fa fa-heart-o fa-fw"></i></a>
 					</div>
 				</div>
 			</div>

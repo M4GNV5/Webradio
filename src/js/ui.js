@@ -13,27 +13,58 @@ function loadPage(name, obj)
 	currentContent.setAttribute("class", "");
 }
 
-function searchFor(keyword)
+var favouriteIndicator = document.getElementById("favourite-indicator");
+function toggleFavourite()
 {
-	//TODO
+	if(player.favourites.hasOwnProperty(player.current))
+	{
+		delete player.favourites[player.current];
+		player.unfavor(player.current);
+		favouriteIndicator.setAttribute("class", "fa fa-heart-o fa-fw");
+	}
+	else
+	{
+		player.favourites[player.current] = player.stations[player.current];
+		player.favor(player.current);
+		favouriteIndicator.setAttribute("class", "fa fa-heart fa-fw");
+	}
+
+	//reload the favourites tab
+	displayList(document.getElementById("list-grid"), player.favourites);
 }
 
-player.reload(function()
+function displayList(list, stations)
 {
+	for(var name in stations)
+	{
+		list.innerHTML += "<li>" +
+			"<a onclick=\"player.play('" + name + "')\">" +
+				"<img class=\"list-img\" src=\"" + stations[name].image + "\" alt=\"" + name + "\" />" +
+			"</a>" +
+		"</li>";
+	}
+}
+
+function searchFor(query)
+{
+	player.search(query, function(err, stations)
+	{
+		if(err)
+			alert(err);
+		else
+			displayList(document.getElementById("search-grid"), stations);
+	});
+}
+
+player.init(function(err)
+{
+	if(err)
+		return alert(err);
+
 	//initialize the play tab
-	document.getElementById("play-img").src = player.current.thumb;
+	document.getElementById("play-img").src = player.stations[player.current];
 	loadPage("play", document.getElementById("play-icon"));
 
 	//initialize the favourites tab
-	var listItem = document.getElementById("list-grid");
-	for(var i = 0; i < player.favourites.length; i++)
-	{
-		var station = player.favourites[i];
-
-		listItem.append("<li>" +
-			"<a onclick=\"player.play('"+name+"')\">" +
-				"<img class=\"list-img\" src=\"" + player.stations[name].img + "\" alt=\"" + name + "\" />" +
-			"</a>" +
-		"</li>");
-	}
+	displayList(document.getElementById("list-grid"), player.favourites);
 });

@@ -3,7 +3,7 @@ function makeRequest(name, args, cb)
 	args = args || {};
 
 	var req = new XMLHttpRequest();
-	var path = "/src/php/ajax.php?name=" + name;
+	var path = "/src/php/ajax.php?do=" + name;
 	for(var name in args)
 	{
 		path += "&" + name + "=" + encodeURIComponent(args[name]);
@@ -16,80 +16,112 @@ function makeRequest(name, args, cb)
 			if(req.readyState === XMLHttpRequest.DONE)
 			{
 				if(req.status == 200)
-				cb(false, req.responseText);
+					cb(false, req.responseText);
 				else
-				cb(req.status, false);
+					cb(req.status, false);
 			}
+		};
+		req.onerror = function(err)
+		{
+			cb("Could not reacht the backend");
 		};
 	}
 	req.open("GET", path);
 	req.send();
 }
 
-var player = {
-	reload: function(cb)
+function makeJsonRequest(name, args, cb)
+{
+	makeRequest(name, args, function(err, body)
 	{
-		makeRequest("init", {}, function(err, data)
+		if(err)
+			return cb(err);
+
+		var obj;
+		try
 		{
-			data = JSON.parse(data);
+			obj = JSON.parse(body);
+		}
+		catch(e)
+		{
+			cb(e);
+			return;
+		}
 
-			player.favourites = data.favourites;
-			player.current = data.current;
+		cb(false, obj);
+	});
+}
 
-			cb();
+var player = {
+	init: function(cb)
+	{
+		makeJsonRequest("init", {}, function(err, data)
+		{
+			if(!err)
+			{
+				player.favourites = data.favourites;
+				player.stations = data.favourites;
+
+				if(data.current)
+				{
+					player.stations[data.current.name] = data.current;
+					player.current = data.current.name;
+				}
+				else
+				{
+					data.current = null;
+				}
+			}
+
+			cb(err);
 		});
 	},
 
 	play: function(name)
 	{
-		makeRequest("play", {station: name});
+		player.current = name;
+		makeRequest("play", {
+			name: name,
+			url: player.stations[name].url,
+			image: player.stations[name].image
+		});
 	},
 	stop: function()
 	{
+		player.current = null;
 		makeRequest("stop");
 	},
+
 	changeVolume: function(diff)
 	{
 		makeRequest("volume", {change: diff});
 	},
-	findStation: function(name, country, category, subcategory, cb)
+
+	search: function(query, cb)
 	{
-		makeRequest("search", {
-			name: name,
-			country: country,
-			category: category,
-			subcategory: subcategory
-		}, function(err, stations)
+		makeJsonRequest("search", {query: query}, function(err, data)
 		{
-			var obj;
-			try
+			if(!err)
 			{
-				if(err)
-					obj = {error: err};
-				else
-					obj = JSON.parse(stations);
-			}
-			catch(e)
-			{
-				obj = {error: "Invalid JSON"};
+				for(var name in data)
+					player.stations[name] = data[name];
 			}
 
-			cb(obj);
+			cb(err, data);
 		});
 	},
 
-	favor: function(station)
+	favor: function(name)
 	{
-		if(typeof station == "object")
-			station = station.id;
-
-		makeRequest("favor", {id: station});
+		var station = player.stations[name];
+		makeRequest("favor", {
+			name: station.name,
+			image: station.image,
+			url: station.url
+		});
 	},
-	unfavor: function(station)
+	unfavor: function(name)
 	{
-		if(typeof station == "object")
-			station = station.id;
-
-		makeRequest("unfavor", {id: station});
+		makeRequest("unfavor", {station: name});
 	}
 };
