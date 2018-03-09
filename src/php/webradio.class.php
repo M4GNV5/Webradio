@@ -1,112 +1,86 @@
 <?php
-
-	$stationJson = file_get_contents(PHP_PATH."data.json");
-	$stationData = json_decode($stationJson, true);
-
 	class Webradio
-	{	
-		public static function playFromUrl($url)
+	{
+		public static function init()
 		{
-			self::mpcCommand("clear");
-			self::mpcCommand("add ".$url);
-			self::mpcCommand("play");
+			return self::readConfig();
 		}
-		
-		public static function playByName($name)
+
+		public static function play($name, $url)
 		{
-			$data = self::getStationData($name);
-			self::playFromUrl($data['url']);
+			$config = self::readConfig();
+                        $config["current"] = $name;
+			self::publishMqtt("station", $url);
+			self::writeConfig($config);
 		}
-		
 		public static function stop()
 		{
-			self::mpcCommand("stop");
+			self::publishMqtt("playing", "0");
 		}
-		
+
 		public static function volume($change)
 		{
-			self::mpcCommand("volume ".$change);
+			$config = self::readConfig();
+			$config["volume"] += $change;
+			self::publishMqtt("volume", (string)$config["volume"]);
+			self::writeConfig($config);
 		}
-		
-		
-		public static function getStations()
+
+		public static function search($query)
 		{
-			global $stationData;
-			
-			return $stationData;
-		}
-		public static function findStation($filter)
-		{
-			global $stationData;
-			
-			$matches = array();
-			foreach($stationData as $key => $value)
+			$req = curl_init("http://api.dirble.com/v2/search?token=" . DIRBLE_TOKEN);
+			curl_setopt($req, CURLOPT_POSTFIELDS, json_encode(array("query" => $query)));
+			curl_setopt($req, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+			curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+
+			$body = curl_exec($req);
+			curl_close($req);
+
+			$result = array();
+			$stations = json_decode($body, true);
+			foreach($stations as $station)
 			{
-				$match = false;
-				foreach($value as $key2 => $value2)
-				{
-					if(!is_string($value2))
-						continue;
-
-					if(strpos($value2, $filter) !== false)
-					{
-						$match = true;
-						break;
-					}
-				}
-				if($match)
-				{
-					$matches[$key] = $value;
-				}
+				$result[$station["name"]] = array(
+					"image" => $station["image"]["url"],
+					"url" => $station["streams"][0]["stream"]
+				);
 			}
-			return $matches;
-		}
-		public static function getCurrentStation()
-		{
-			global $stationData;
-			
-			$url = self::mpcCommand("playlist");
-			foreach($stationData as $key => $value)
-			{
-				if(isset($value) && $value["url"] == $url)
-					return $key;
-			}
-			return false;
-		}
-		
-		public static function getStationData($name)
-		{
-			global $stationData;
-			
-			return $stationData[$name];
+
+			return $result;
 		}
 
-		public static function setStationData($name, $url, $img)
+		public static function favor($name, $image, $url)
 		{
-			global $stationData;
-
-			$url = str_replace("%and%", "&", $url);
-				
-			$data = array(
-				"name" => $name,
-				"url" => $url,
-				"img" => $img
+			$config = self::readConfig();
+			$config["favourites"][$name] = array(
+				"image" => $image,
+				"url" => $url
 			);
-
-			$stationData[$name] = $data;
-
-			file_put_contents(PHP_PATH."data.json", json_encode($stationData));
+			self::writeConfig($config);
 		}
-		
-		
-		
-		private static function mpcCommand($command)
+		public static function unfavor($name)
 		{
-			if(!isset($command))
-				$command = "";
-			
-			echo('running "mpc '.$command.'"---');
-			//return shell_exec("mpc ".$command);
+			$config = self::readConfig();
+			unset($config["favourites"][$name]);
+			self::writeConfig($config);
+		}
+
+		private static function readConfig()
+		{
+			$stationJson = file_get_contents(PHP_PATH . "data.json");
+			return json_decode($stationJson, true);
+		}
+		private static function writeConfig($config)
+		{
+			file_put_contents(PHP_PATH . "data.json", json_encode($config));
+		}
+
+		private static function publishMqtt($topic, $content)
+		{
+			$mqtt = new MQTT(MQTT_HOST, MQTT_PORT, MQTT_CLIENT_ID);
+			$mqtt->connect();
+			$mqtt->publish(MQTT_TOPIC . $topic, $content);
+			$mqtt->close();
 		}
 	}
 

@@ -1,6 +1,9 @@
 <?php
 	require_once("config.php");
 
+	if(!isset($_GET["do"]))
+		die("Invalid action");
+
 	$func = $_GET['do'];
 	$param = array();
 	foreach($_GET as $key => $value)
