@@ -15,7 +15,10 @@
 		}
 		public static function stop()
 		{
+			$config = self::readConfig();
+                        $config["current"] = null;
 			self::publishMqtt("playing", "0");
+			self::writeConfig($config);
 		}
 
 		public static function volume($change)

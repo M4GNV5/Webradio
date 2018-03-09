@@ -65,7 +65,7 @@ var player = {
 				if(data.current)
 				{
 					player.stations[data.current.name] = data.current;
-					player.current = data.current.name;
+					player.current = data.current;
 				}
 				else
 				{
