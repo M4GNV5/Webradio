@@ -60,7 +60,7 @@ var player = {
 			if(!err)
 			{
 				player.favourites = data.favourites;
-				player.stations = data.favourites;
+				player.stations = Object.assign({}, data.favourites);
 
 				if(data.current)
 				{
@@ -115,7 +115,7 @@ var player = {
 	{
 		var station = player.stations[name];
 		makeRequest("favor", {
-			name: station.name,
+			name: name,
 			image: station.image,
 			url: station.url
 		});

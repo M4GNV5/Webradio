@@ -13,6 +13,19 @@ function loadPage(name, obj)
 	currentContent.setAttribute("class", "");
 }
 
+var image = document.getElementById("play-img");
+function play(name)
+{
+	player.play(name);
+	image.src = player.stations[name].image;
+	loadPage("play", document.getElementById("play-icon"));
+}
+function stop()
+{
+	player.stop();
+	image.src = "black.png";
+}
+
 var favouriteIndicator = document.getElementById("favourite-indicator");
 function toggleFavourite()
 {
@@ -38,7 +51,7 @@ function displayList(list, stations)
 	for(var name in stations)
 	{
 		list.innerHTML += "<li>" +
-			"<a onclick=\"player.play('" + name + "')\">" +
+			"<a onclick=\"play('" + name + "')\">" +
 				"<img class=\"list-img\" src=\"" + stations[name].image + "\" alt=\"" + name + "\" />" +
 			"</a>" +
 		"</li>";
@@ -62,7 +75,8 @@ player.init(function(err)
 		return alert(err);
 
 	//initialize the play tab
-	document.getElementById("play-img").src = player.stations[player.current];
+	if(player.stations.hasOwnProperty(player.current))
+		document.getElementById("play-img").src = player.stations[player.current].image;
 	loadPage("play", document.getElementById("play-icon"));
 
 	//initialize the favourites tab
